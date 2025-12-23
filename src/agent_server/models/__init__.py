@@ -9,6 +9,15 @@ from .assistants import (
     AssistantUpdate,
 )
 from .auth import AuthContext, TokenPayload, User
+from .organizations import (
+    MembershipCreate,
+    MembershipUpdate,
+    Organization,
+    OrganizationCreate,
+    OrganizationMember,
+    OrganizationView,
+    OrganizationWithMembers,
+)
 from .errors import AgentProtocolError, get_error_type
 from .runs import Run, RunCreate, RunStatus
 from .store import (
@@ -71,4 +80,12 @@ __all__ = [
     "User",
     "AuthContext",
     "TokenPayload",
+    # Organizations
+    "Organization",
+    "OrganizationCreate",
+    "OrganizationWithMembers",
+    "OrganizationMember",
+    "OrganizationView",
+    "MembershipCreate",
+    "MembershipUpdate",
 ]

@@ -27,3 +27,15 @@ htmlcov/
 
 # Pre-commit
 .pre-commit-cache/
+
+# Node / frontend
+node_modules/
+dist/
+npm-debug.log*
+yarn-error.log*
+
+# Node / frontend
+node_modules/
+dist/
+npm-debug.log*
+yarn-error.log*

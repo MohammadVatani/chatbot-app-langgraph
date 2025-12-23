@@ -20,6 +20,7 @@ class AssistantCreate(BaseModel):
     config: dict[str, Any] | None = Field({}, description="Assistant configuration")
     context: dict[str, Any] | None = Field({}, description="Assistant context")
     graph_id: str = Field(..., description="LangGraph graph ID from aegra.json")
+    org_id: str | None = Field(None, description="Organization that owns the assistant")
     metadata: dict[str, Any] | None = Field(
         {}, description="Metadata to use for searching and filtering assistants."
     )
@@ -38,6 +39,7 @@ class Assistant(BaseModel):
     context: dict[str, Any] = Field(default_factory=dict)
     graph_id: str
     user_id: str
+    org_id: str | None = None
     version: int = Field(..., description="The version of the assistant.")
     metadata: dict[str, Any] = Field(default_factory=dict, alias="metadata_dict")
     created_at: datetime
@@ -63,6 +65,7 @@ class AssistantUpdate(BaseModel):
         {},
         description="The context to use for the graph. Useful when graph is configurable.",
     )
+    org_id: str | None = Field(None, description="Organization that owns the assistant")
     metadata: dict[str, Any] | None = Field(
         {}, description="Metadata to use for searching and filtering assistants."
     )
@@ -81,6 +84,7 @@ class AssistantSearchRequest(BaseModel):
     name: str | None = Field(None, description="Filter by assistant name")
     description: str | None = Field(None, description="Filter by assistant description")
     graph_id: str | None = Field(None, description="Filter by graph ID")
+    org_id: str | None = Field(None, description="Filter by organization")
     limit: int | None = Field(20, le=100, ge=1, description="Maximum results")
     offset: int | None = Field(0, ge=0, description="Results offset")
     metadata: dict[str, Any] | None = Field(
