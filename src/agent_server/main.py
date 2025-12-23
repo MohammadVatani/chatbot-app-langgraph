@@ -30,6 +30,7 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.routing import Mount, Route
 
 from .api.assistants import router as assistants_router
+from .api.organizations import router as organizations_router
 from .api.runs import router as runs_router
 from .api.store import router as store_router
 from .api.threads import router as threads_router
@@ -147,7 +148,13 @@ unshadowable_routes = unshadowable_health_routes
 # Create protected routes mount (core API routes)
 # Extract routes from routers for the mount
 protected_routes = []
-for router in [assistants_router, threads_router, runs_router, store_router]:
+for router in [
+    assistants_router,
+    threads_router,
+    runs_router,
+    store_router,
+    organizations_router,
+]:
     protected_routes.extend(router.routes)
 
 protected_mount = Mount(
@@ -269,6 +276,7 @@ else:
     app.include_router(threads_router, prefix="", tags=["Threads"])
     app.include_router(runs_router, prefix="", tags=["Runs"])
     app.include_router(store_router, prefix="", tags=["Store"])
+    app.include_router(organizations_router, prefix="", tags=["Organizations"])
 
     # Add exception handlers
     for exc_type, handler in exception_handlers.items():

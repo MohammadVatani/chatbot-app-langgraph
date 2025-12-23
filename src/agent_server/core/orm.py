@@ -31,6 +31,40 @@ from sqlalchemy.orm import Mapped, declarative_base, mapped_column
 Base = declarative_base()
 
 
+class Organization(Base):
+    __tablename__ = "organizations"
+
+    org_id: Mapped[str] = mapped_column(
+        Text, primary_key=True, server_default=text("uuid_generate_v4()::text")
+    )
+    name: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
+    created_by: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        TIMESTAMP(timezone=True), server_default=text("now()")
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        TIMESTAMP(timezone=True), server_default=text("now()")
+    )
+
+    __table_args__ = (Index("idx_organizations_name", "name", unique=True),)
+
+
+class OrganizationMember(Base):
+    __tablename__ = "organization_members"
+
+    org_id: Mapped[str] = mapped_column(
+        Text, ForeignKey("organizations.org_id", ondelete="CASCADE"), primary_key=True
+    )
+    user_id: Mapped[str] = mapped_column(Text, primary_key=True)
+    role: Mapped[str] = mapped_column(Text, nullable=False)
+    invited_by: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        TIMESTAMP(timezone=True), server_default=text("now()")
+    )
+
+    __table_args__ = (Index("idx_org_member_role", "org_id", "role"),)
+
+
 class Assistant(Base):
     __tablename__ = "assistant"
 
@@ -44,6 +78,9 @@ class Assistant(Base):
     config: Mapped[dict] = mapped_column(JSONB, server_default=text("'{}'::jsonb"))
     context: Mapped[dict] = mapped_column(JSONB, server_default=text("'{}'::jsonb"))
     user_id: Mapped[str] = mapped_column(Text, nullable=False)
+    org_id: Mapped[str | None] = mapped_column(
+        Text, ForeignKey("organizations.org_id", ondelete="SET NULL"), nullable=True
+    )
     version: Mapped[int] = mapped_column(
         Integer, nullable=False, server_default=text("1")
     )
@@ -68,6 +105,7 @@ class Assistant(Base):
             "config",
             unique=True,
         ),
+        Index("idx_assistant_org", "org_id"),
     )
 
 
